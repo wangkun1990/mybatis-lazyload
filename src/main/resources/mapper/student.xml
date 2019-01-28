@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.mapper.StudentMapper">
+
+    <resultMap id="student" type="com.mybatis.entity.Student">
+        <id column="stu_id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="sex" property="sex" />
+        <association column="dep_id" property="department" javaType="com.mybatis.entity.Department"
+                     select="com.mybatis.mapper.DepartmentMapper.getDepartmentById">
+        </association>
+    </resultMap>
+    <select id="getStudentById" resultMap="student">
+        SELECT stu_id, name, dep_id, sex
+        FROM student WHERE stu_id=#{id}
+    </select>
+
+    <select id="getStudentListByParams" parameterType="com.mybatis.entity.Student" resultMap="student">
+        select * from student
+        <where>
+            <if test="student.getId() != null">
+                stu_id = #{student.id}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="insert" parameterType="com.mybatis.entity.Student">
+        insert into student(name, dep_id, sex) values (#{name}, #{department.id}, #{sex})
+    </insert>
+
+    <select id="queryStudentByParams" resultType="com.mybatis.entity.Student">
+        select stu_id, name, sex
+        from student
+        where sex = #{param1.sex}
+        limit #{param2.startIndex}, #{param2.pageSize}
+    </select>
+
+    <update id="updateStudent" parameterType="com.mybatis.entity.Student">
+        update student
+        <trim prefix="set" prefixOverrides=",">
+            <if test='@org.apache.commons.lang3.StringUtils@isNotBlank(name)'>
+                name = #{name}
+            </if>
+            <if test='sex != null'>
+                ,sex = #{sex}
+            </if>
+            where stu_id = #{id}
+        </trim>
+
+    </update>
+
+    <delete id="deleteStudent">
+        delete from student where stu_id = #{id}
+    </delete>
+
+    <select id="getMapStudents" resultMap="student">
+        select stu_id, name, sex, dep_id
+        from student
+    </select>
+</mapper>
