@@ -4,6 +4,7 @@ import com.mybatis.entity.Department;
 import com.mybatis.entity.PageModel;
 import com.mybatis.entity.Student;
 import com.mybatis.service.IStudentService;
+import org.hamcrest.core.Is;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -12,22 +13,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:spring/spring-service.xml"})
 public class StudentServiceImplTest {
 
-    private final Logger logger = LoggerFactory.getLogger(StudentServiceImplTest.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(StudentServiceImplTest.class);
 
     @Autowired
     private IStudentService studentService;
     @Test
     public void getStudentById() {
         Student student = studentService.getStudentById(1);
-        logger.info("Student Class = {}", student.getClass());
+        LOGGER.info("Student Class = {}", student.getClass());
         student.getDepartment().getId();
     }
 
@@ -36,7 +42,7 @@ public class StudentServiceImplTest {
         Student student = new Student();
         student.setId(1);
         Student result = studentService.getStudentListByParams(student);
-        logger.info("getStudentListByParams result = {}", result);
+        LOGGER.info("getStudentListByParams result = {}", result);
     }
 
     @Test
@@ -56,7 +62,7 @@ public class StudentServiceImplTest {
         student.setSex(1);
         PageModel pageModel = new PageModel();
         List<Student> students = studentService.queryStudentByParams(student, pageModel);
-        logger.info("queryStudentByParams result = {}", students);
+        LOGGER.info("queryStudentByParams result = {}", students);
     }
 
     @Test
@@ -66,18 +72,91 @@ public class StudentServiceImplTest {
         student.setId(1);
         //student.setName("hello");
         int result = studentService.updateStudent(student);
-        logger.info("updateStudent result = {}", result);
+        LOGGER.info("updateStudent result = {}", result);
     }
 
     @Test
     public void deleteStudent() {
         int result = studentService.deleteStudent(18);
-        logger.info("deleteStudent result = {}", result);
+        LOGGER.info("deleteStudent result = {}", result);
     }
 
     @Test
     public void getMapStudents() {
         Map<Integer, Student> result = studentService.getMapStudents();
-        logger.info("getMapStudents result = {}", result);
+        LOGGER.info("getMapStudents result = {}", result);
+    }
+
+    @Test
+    public void selectOne() {
+        Student student = studentService.selectOne(1);
+        LOGGER.info("selectOne = {}", student);
+    }
+
+    @Test
+    public void selectByName() {
+        List<Student> students = studentService.selectByName("tom");
+        LOGGER.info("selectByName = {}", students);
+    }
+
+    @Test
+    public void selectByIdAndName() {
+        Student student = studentService.selectByIdAndName(1, "tom");
+        LOGGER.info("selectByIdAndName = {}", student);
+    }
+
+    @Test
+    public void getByIds() {
+        List<Integer> ids = new ArrayList<>();
+        ids.add(1);
+        ids.add(2);
+        ids.add(4);
+        List<Student> students = studentService.getByIds(ids);
+        LOGGER.info("getByIds = {}", students);
+    }
+
+    @Test
+    public void getByIdsSet() {
+        Set<Integer> set = new HashSet<>();
+        set.add(1);
+        set.add(2);
+        List<Student> students = studentService.getByIdsSet(set);
+        LOGGER.info("getByIdsSet = {}", students);
+    }
+
+
+    @Test
+    public void getByIdsCollection() {
+        Collection<Integer> ids = new ArrayList<>();
+        ids.add(1);
+        ids.add(2);
+        List<Student> students = studentService.getByIdsCollection(ids);
+        LOGGER.info("getByIdsCollection = {}", students);
+    }
+
+    @Test
+    public void getByIdsArray() {
+        Integer[] ids = new Integer[] {1, 2};
+        List<Student> students = studentService.getByIdsArray(ids);
+        LOGGER.info("getByIdsArray = {}", students);
+    }
+
+
+    @Test
+    public void selectByParam() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("stuId", "1");
+        map.put("name", "tom");
+        List<Student> students = studentService.selectByParam(map);
+        LOGGER.info("selectByParam = {}", students);
+    }
+
+    @Test
+    public void selectByNames() {
+        List<String> names = new ArrayList<>();
+        names.add("tom");
+        names.add("zhangsan");
+        List<Student> students = studentService.selectByNames(names);
+        LOGGER.info("selectByNames = {}", students);
     }
 }

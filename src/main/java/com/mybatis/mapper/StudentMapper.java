@@ -5,12 +5,26 @@ import com.mybatis.entity.Student;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface StudentMapper {
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     Student getStudentById(Integer id);
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    Student selectOne(Integer id);
 
     /**
      *
@@ -35,4 +49,49 @@ public interface StudentMapper {
 
     @MapKey("id")
     Map<Integer, Student> getMapStudents();
+
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    List<Student> selectByName(String name);
+
+
+    /**
+     *
+     * @param id
+     * @param name
+     * @return
+     */
+    Student selectByIdAndName(@Param("id") Integer id, @Param("name") String name);
+
+
+    /**
+     *
+     * @param ids
+     * @return
+     */
+    List<Student> getByIds(List<Integer> ids);
+
+    List<Student> getByIdsSet(Set<Integer> ids);
+
+    List<Student> getByIdsCollection(Collection<Integer> ids);
+
+    List<Student> getByIdsArray(Integer[] ids);
+
+    /**
+     *
+     * @param param
+     * @return
+     */
+    List<Student> selectByParam(Map<String, Object> param);
+
+    /**
+     *
+     * @param names
+     * @return
+     */
+    List<Student> selectByNames(List<String> names);
 }

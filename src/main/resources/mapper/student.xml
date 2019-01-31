@@ -15,6 +15,21 @@
         FROM student WHERE stu_id=#{id}
     </select>
 
+    <select id="selectOne" resultMap="student">
+        select stu_id, name, sex
+        from student where stu_id = #{id}
+    </select>
+
+    <select id="selectByName" resultMap="student">
+        select stu_id, name, sex
+        from student where name = #{name}
+    </select>
+
+    <select id="selectByIdAndName" resultMap="student">
+        select stu_id, name, sex
+        from student where stu_id = #{id} and name = #{name}
+    </select>
+
     <select id="getStudentListByParams" parameterType="com.mybatis.entity.Student" resultMap="student">
         select * from student
         <where>
@@ -57,5 +72,63 @@
     <select id="getMapStudents" resultMap="student">
         select stu_id, name, sex, dep_id
         from student
+    </select>
+
+    <select id="getByIds" resultMap="student">
+        select stu_id, name, sex
+        from student
+        where stu_id in
+        <foreach collection="list" index="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getByIdsSet" resultMap="student">
+        select stu_id, name, sex
+        from student
+        where stu_id in
+        <foreach collection="collection" index="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getByIdsCollection" resultMap="student">
+        select stu_id, name, sex
+        from student
+        where stu_id in
+        <foreach collection="collection" index="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getByIdsArray" resultMap="student">
+        select stu_id, name, sex
+        from student
+        where stu_id in
+        <foreach collection="array" index="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectByParam" parameterType="map" resultMap="student">
+        select stu_id, name, sex
+        from student
+        <where>
+            <if test="stuId != null">
+                and stu_id = #{stuId}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+        </where>
+
+    </select>
+    <select id="selectByNames" resultMap="student">
+        select stu_id, name, sex
+        from student
+        where name in
+        <foreach collection="list" item="name" open="(" close=")" separator=",">
+            #{name}
+        </foreach>
     </select>
 </mapper>

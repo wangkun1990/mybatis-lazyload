@@ -7,8 +7,10 @@ import com.mybatis.service.IStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class StudentServiceImpl implements IStudentService {
@@ -49,5 +51,50 @@ public class StudentServiceImpl implements IStudentService {
     @Override
     public Map<Integer, Student> getMapStudents() {
         return studentMapper.getMapStudents();
+    }
+
+    @Override
+    public Student selectOne(Integer id) {
+        return studentMapper.selectOne(id);
+    }
+
+    @Override
+    public List<Student> selectByName(String name) {
+        return studentMapper.selectByName(name);
+    }
+
+    @Override
+    public Student selectByIdAndName(Integer id, String name) {
+        return studentMapper.selectByIdAndName(id, name);
+    }
+
+    @Override
+    public List<Student> getByIds(List<Integer> ids) {
+        return studentMapper.getByIds(ids);
+    }
+
+    @Override
+    public List<Student> selectByParam(Map<String, Object> param) {
+        return studentMapper.selectByParam(param);
+    }
+
+    @Override
+    public List<Student> getByIdsSet(Set<Integer> ids) {
+        return studentMapper.getByIdsSet(ids);
+    }
+
+    @Override
+    public List<Student> getByIdsCollection(Collection<Integer> ids) {
+        return studentMapper.getByIdsCollection(ids);
+    }
+
+    @Override
+    public List<Student> getByIdsArray(Integer[] ids) {
+        return studentMapper.getByIdsArray(ids);
+    }
+
+    @Override
+    public List<Student> selectByNames(List<String> names) {
+        return studentMapper.selectByNames(names);
     }
 }
