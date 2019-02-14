@@ -62,6 +62,17 @@
         <property name="typeAliasesPackage" value="com.mybatis.entity"/>
         <!-- 扫描sql配置文件 -->
         <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+        <property name="plugins">
+            <list>
+                <bean class="com.mybatis.interceptor.SqlLogInterceptor">
+                    <property name="properties">
+                        <props>
+                            <prop key="slowSqlTime">1</prop>
+                        </props>
+                    </property>
+                </bean>
+            </list>
+        </property>
     </bean>
 
     <!-- 配置扫描dao接口包，动态实现dao接口，并注入到spring容器中 -->

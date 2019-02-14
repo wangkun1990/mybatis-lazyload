@@ -19,10 +19,10 @@
 
     </settings>
     
-    <plugins>
+    <!--<plugins>
         <plugin interceptor="com.mybatis.interceptor.SqlLogInterceptor">
             <property name="slowSqlTime" value="2000"/>
         </plugin>
-    </plugins>
+    </plugins>-->
 
 </configuration>
