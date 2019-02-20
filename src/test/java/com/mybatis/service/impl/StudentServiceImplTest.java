@@ -159,4 +159,30 @@ public class StudentServiceImplTest {
         List<Student> students = studentService.selectByNames(names);
         LOGGER.info("selectByNames = {}", students);
     }
+
+    @Test
+    public void batchUpdate() {
+        List<Student> students = studentService.selectAll();
+        for (Student student : students) {
+            student.setName(student.getName() + 1);
+        }
+        int count = studentService.batchUpdate(students);
+        LOGGER.info("batchUpdate count = {}", count);
+    }
+
+    @Test
+    public void batchInsert() {
+        List<Student> students = new ArrayList<>();
+        Student student = new Student();
+        student.setName("qidelong");
+        student.setSex(1);
+        students.add(student);
+
+        student = new Student();
+        student.setName("zhaoben");
+        student.setSex(2);
+        students.add(student);
+        int count = studentService.batchInsert(students);
+        LOGGER.info("batchInsert count = {}", count);
+    }
 }

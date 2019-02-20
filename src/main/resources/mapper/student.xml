@@ -131,4 +131,29 @@
             #{name}
         </foreach>
     </select>
+
+    <update id="batchUpdate" parameterType="com.mybatis.entity.Student">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update student
+            <set>
+              <if test="item.name != null and item.name != ''">
+                  name=#{item.name}
+              </if>
+            </set>
+            where stu_id = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectAll" resultMap="student">
+        select stu_id, name, sex
+        from student
+    </select>
+
+    <insert id="batchInsert" parameterType="com.mybatis.entity.Student">
+        insert into student(name, sex)
+        values
+        <foreach collection="list" separator="," item="item" index="index">
+            (#{item.name}, #{item.sex})
+        </foreach>
+    </insert>
 </mapper>

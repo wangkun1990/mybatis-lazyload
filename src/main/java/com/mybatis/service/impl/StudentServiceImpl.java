@@ -97,4 +97,19 @@ public class StudentServiceImpl implements IStudentService {
     public List<Student> selectByNames(List<String> names) {
         return studentMapper.selectByNames(names);
     }
+
+    @Override
+    public int batchUpdate(List<Student> students) {
+        return studentMapper.batchUpdate(students);
+    }
+
+    @Override
+    public List<Student> selectAll() {
+        return studentMapper.selectAll();
+    }
+
+    @Override
+    public int batchInsert(List<Student> students) {
+        return studentMapper.batchInsert(students);
+    }
 }

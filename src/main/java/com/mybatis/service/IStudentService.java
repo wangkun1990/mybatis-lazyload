@@ -97,4 +97,10 @@ public interface IStudentService {
     List<Student> getByIdsArray(Integer[] ids);
 
     List<Student> selectByNames(List<String> names);
+
+    int batchUpdate(List<Student> students);
+
+    List<Student> selectAll();
+
+    int batchInsert(List<Student> students);
 }
