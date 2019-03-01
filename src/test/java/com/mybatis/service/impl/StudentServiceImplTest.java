@@ -185,4 +185,10 @@ public class StudentServiceImplTest {
         int count = studentService.batchInsert(students);
         LOGGER.info("batchInsert count = {}", count);
     }
+
+    @Test
+    public void selectByMulParam() {
+        List<Student> students = studentService.selectByMulParam("qidelong", 1);
+        LOGGER.info("selectByMulParam = {}", students);
+    }
 }

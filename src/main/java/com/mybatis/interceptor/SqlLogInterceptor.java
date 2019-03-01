@@ -1,5 +1,7 @@
 package com.mybatis.interceptor;
 
+import com.mybatis.util.ReflectUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.ParameterMapping;
@@ -13,7 +15,9 @@ import org.apache.ibatis.session.defaults.DefaultSqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -48,6 +52,7 @@ public class SqlLogInterceptor implements Interceptor {
         } else {
             sql2 = bindCustomObjectParam(boundSql, param);
         }
+        sql2 = beautifySql(sql2);
         LOGGER.info("sql : {}", sql2);
         long start = System.currentTimeMillis();
         Object result = invocation.proceed();
@@ -71,6 +76,18 @@ public class SqlLogInterceptor implements Interceptor {
     private String bindCustomObjectParam(BoundSql boundSql, Object param) {
         String sql = boundSql.getSql();
         try {
+            List<String> paramNames = new ArrayList<>();
+            List<ParameterMapping> paramMapping = boundSql.getParameterMappings();
+            for (ParameterMapping mapping : paramMapping) {
+                String propName = mapping.getProperty();
+                int index = propName.indexOf(".");
+                if (index > 0) {
+                    propName = propName.substring(index + 1);
+                }
+                if (!paramNames.contains(propName)) {
+                    paramNames.add(propName);
+                }
+            }
             if ((param instanceof Number) || (param instanceof Boolean) || (param instanceof Character) || (param instanceof Void)) {
                 sql = sql.replaceFirst("\\?", Objects.toString(param));
             } else if (param instanceof String) {
@@ -80,20 +97,20 @@ public class SqlLogInterceptor implements Interceptor {
                 if (strictMap.containsKey("array")) {
                     Object[] array = (Object[]) strictMap.get("array");
                     for (Object object : array) {
-                        sql = appendParams(sql, object);
+                        sql = appendParams(sql, object, paramNames);
                     }
                 } else if (strictMap.containsKey("collection")) {
                     Collection<Object> collection = (Collection<Object>) strictMap.get("collection");
                     for (Object object : collection) {
-                        sql = appendParams(sql, object);
+                        sql = appendParams(sql, object, paramNames);
                     }
                 }
             } else {
-                List<ParameterMapping> paramMapping = boundSql.getParameterMappings();
-                for (ParameterMapping mapping : paramMapping) {
+                List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+                for (ParameterMapping mapping : parameterMappings) {
                     String propName = mapping.getProperty();
                     Object value = OgnlCache.getValue(propName, param);
-                    sql = appendParams(sql, value);
+                    sql = appendParams(sql, value, new ArrayList<>());
                 }
             }
         } catch (Exception e) {
@@ -102,12 +119,40 @@ public class SqlLogInterceptor implements Interceptor {
         return sql;
     }
 
-    private String appendParams(String sql, Object value) {
+    private String appendParams(String sql, Object value, List<String> paramNames) throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         String tmpSql = sql;
-        if (value.getClass() == String.class) {
-            return tmpSql.replaceFirst("\\?", "'" + value + "'");
+        if (ReflectUtils.isPrimitive(value.getClass())) {
+            return appendParam(tmpSql, value);
         } else {
-            return tmpSql.replaceFirst("\\?", Objects.toString(value));
+            for (String paramName : paramNames) {
+                Field field;
+                try {
+                    // 如何判断一个对象是否是代理对象,jdk代理,cglib代理,javassist代理?
+                    // 非代理对象
+                    field = value.getClass().getDeclaredField(paramName);
+                } catch (Exception e) {
+                    // 代理对象
+                    field = value.getClass().getSuperclass().getDeclaredField(paramName);
+                }
+                field.setAccessible(true);
+                Object fieldValue = field.get(value);
+                tmpSql = appendParam(tmpSql, fieldValue);
+            }
+            return tmpSql;
         }
+    }
+
+    private String beautifySql(String sql) {
+        sql = sql.replaceAll("[\\s\n ]+", " ");
+        return sql;
+    }
+
+
+    private String appendParam(String sql, Object paramValue) {
+        String tmpSql = sql;
+        if (NumberUtils.isCreatable(paramValue.toString())) {
+            return tmpSql.replaceFirst("\\?", Objects.toString(paramValue));
+        }
+        return tmpSql.replaceFirst("\\?", "'" + paramValue + "'");
     }
 }

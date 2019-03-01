@@ -112,4 +112,9 @@ public class StudentServiceImpl implements IStudentService {
     public int batchInsert(List<Student> students) {
         return studentMapper.batchInsert(students);
     }
+
+    @Override
+    public List<Student> selectByMulParam(String name, Integer sex) {
+        return studentMapper.selectByMulParam(name, sex);
+    }
 }

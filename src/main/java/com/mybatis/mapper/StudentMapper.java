@@ -94,4 +94,32 @@ public interface StudentMapper {
      * @return
      */
     List<Student> selectByNames(List<String> names);
+
+    /**
+     *
+     * @param students
+     * @return
+     */
+    int batchUpdate(List<Student> students);
+
+    /**
+     *
+     * @return
+     */
+    List<Student> selectAll();
+
+    /**
+     * 批量插入
+     * @param students
+     * @return
+     */
+    int batchInsert(List<Student> students);
+
+    /**
+     *
+     * @param name
+     * @param sex
+     * @return
+     */
+    List<Student> selectByMulParam(@Param("name") String name, @Param("sex") Integer sex);
 }

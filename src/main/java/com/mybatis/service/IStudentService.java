@@ -103,4 +103,12 @@ public interface IStudentService {
     List<Student> selectAll();
 
     int batchInsert(List<Student> students);
+
+    /**
+     *
+     * @param name
+     * @param sex
+     * @return
+     */
+    List<Student> selectByMulParam(String name, Integer sex);
 }

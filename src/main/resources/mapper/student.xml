@@ -149,11 +149,17 @@
         from student
     </select>
 
-    <insert id="batchInsert" parameterType="com.mybatis.entity.Student">
+    <insert id="batchInsert" parameterType="com.mybatis.entity.Student" useGeneratedKeys="true" keyProperty="id" keyColumn="stu_id">
         insert into student(name, sex)
         values
         <foreach collection="list" separator="," item="item" index="index">
             (#{item.name}, #{item.sex})
         </foreach>
     </insert>
+
+    <select id="selectByMulParam" resultMap="student">
+        select stu_id, name, sex
+        from student
+        where name = #{name} and sex = #{sex}
+    </select>
 </mapper>
