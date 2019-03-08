@@ -10,16 +10,19 @@ import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.scripting.xmltags.ForEachSqlNode;
 import org.apache.ibatis.scripting.xmltags.OgnlCache;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ClassUtils;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -53,12 +56,13 @@ public class SqlLogInterceptor implements Interceptor {
             sql2 = bindCustomObjectParam(boundSql, param);
         }
         sql2 = beautifySql(sql2);
-        LOGGER.info("sql : {}", sql2);
         long start = System.currentTimeMillis();
         Object result = invocation.proceed();
         Long costTime = System.currentTimeMillis() - start;
         if (costTime > slowSqlTime) {
-            LOGGER.warn("sql:{} cost {} ms, slowSqlTime = {} ms", new Object[]{sql2, costTime, slowSqlTime});
+            LOGGER.warn("sql with param = {} cost time = {} ms, slowSqlTime = {} ms", new Object[]{sql2, costTime, slowSqlTime});
+        } else {
+            LOGGER.info("sql with param = {}, cost time = {} ms", new Object[] {sql2, costTime});
         }
         return result;
     }
@@ -74,6 +78,7 @@ public class SqlLogInterceptor implements Interceptor {
     }
 
     private String bindCustomObjectParam(BoundSql boundSql, Object param) {
+        LOGGER.info("object class = {}", param.getClass());
         String sql = boundSql.getSql();
         try {
             List<String> paramNames = new ArrayList<>();
@@ -109,8 +114,12 @@ public class SqlLogInterceptor implements Interceptor {
                 List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
                 for (ParameterMapping mapping : parameterMappings) {
                     String propName = mapping.getProperty();
-                    Object value = OgnlCache.getValue(propName, param);
-                    sql = appendParams(sql, value, new ArrayList<>());
+                    if (propName.startsWith(ForEachSqlNode.ITEM_PREFIX) && Map.class.isAssignableFrom(param.getClass())) {
+                        sql = appendParams(sql, boundSql.getAdditionalParameter(propName), new ArrayList<>());
+                    } else {
+                        Object value = OgnlCache.getValue(propName, param);
+                        sql = appendParams(sql, value, new ArrayList<>());
+                    }
                 }
             }
         } catch (Exception e) {
@@ -124,14 +133,19 @@ public class SqlLogInterceptor implements Interceptor {
         if (ReflectUtils.isPrimitive(value.getClass())) {
             return appendParam(tmpSql, value);
         } else {
+            LOGGER.error("isCglibProxyClass = {}", ClassUtils.isCglibProxyClass(value.getClass()));
             for (String paramName : paramNames) {
                 Field field;
                 try {
                     // 如何判断一个对象是否是代理对象,jdk代理,cglib代理,javassist代理?
-                    // 非代理对象
-                    field = value.getClass().getDeclaredField(paramName);
+                    if (ClassUtils.isCglibProxyClass(value.getClass())) {
+                        // 代理对象
+                        field = value.getClass().getSuperclass().getDeclaredField(paramName);
+                    } else {
+                        // 非代理对象
+                        field = value.getClass().getDeclaredField(paramName);
+                    }
                 } catch (Exception e) {
-                    // 代理对象
                     field = value.getClass().getSuperclass().getDeclaredField(paramName);
                 }
                 field.setAccessible(true);

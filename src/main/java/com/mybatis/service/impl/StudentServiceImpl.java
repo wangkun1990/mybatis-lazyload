@@ -117,4 +117,9 @@ public class StudentServiceImpl implements IStudentService {
     public List<Student> selectByMulParam(String name, Integer sex) {
         return studentMapper.selectByMulParam(name, sex);
     }
+
+    @Override
+    public List<Student> selectByMap(Map<String, Object> paramMap) {
+        return studentMapper.selectByMap(paramMap);
+    }
 }

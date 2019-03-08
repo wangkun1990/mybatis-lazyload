@@ -111,4 +111,11 @@ public interface IStudentService {
      * @return
      */
     List<Student> selectByMulParam(String name, Integer sex);
+
+    /**
+     *
+     * @param paramMap
+     * @return
+     */
+    List<Student> selectByMap(Map<String, Object> paramMap);
 }

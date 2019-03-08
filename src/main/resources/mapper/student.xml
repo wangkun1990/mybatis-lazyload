@@ -162,4 +162,21 @@
         from student
         where name = #{name} and sex = #{sex}
     </select>
+
+    <select id="selectByMap" resultMap="student">
+        select stu_id, name, sex
+        from student
+        where name = #{name} or stu_id in
+        <foreach collection="ids" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        or sex in
+        <foreach collection="sex" open="(" close=")" separator="," item="sex">
+            #{sex}
+        </foreach>
+        or name in
+        <foreach collection="names" item="name" separator="," open="(" close=")">
+            #{name}
+        </foreach>
+    </select>
 </mapper>

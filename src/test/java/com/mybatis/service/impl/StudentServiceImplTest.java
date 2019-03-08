@@ -191,4 +191,27 @@ public class StudentServiceImplTest {
         List<Student> students = studentService.selectByMulParam("qidelong", 1);
         LOGGER.info("selectByMulParam = {}", students);
     }
+
+    @Test
+    public void selectByMap() {
+        Map<String, Object> param = new HashMap<>();
+        List<Integer> ids = new ArrayList<>();
+        ids.add(1);
+        ids.add(2);
+        ids.add(3);
+        param.put("ids", ids);
+        List<Integer> sex = new ArrayList<>();
+        sex.add(1);
+        sex.add(2);
+        param.put("sex", sex);
+        param.put("name", "jim");
+        List<String> names = new ArrayList<>();
+        names.add("jim");
+        names.add("qidelong");
+        names.add("zhaoben");
+        names.add("tom");
+        param.put("names", names);
+        List<Student> students = studentService.selectByMap(param);
+        LOGGER.info("selectByMap = {}", students);
+    }
 }
