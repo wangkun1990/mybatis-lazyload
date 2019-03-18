@@ -122,4 +122,11 @@ public interface StudentMapper {
      * @return
      */
     List<Student> selectByMulParam(@Param("name") String name, @Param("sex") Integer sex);
+
+    /**
+     *
+     * @param paramMap
+     * @return
+     */
+    List<Student> selectByMap(Map<String, Object> paramMap);
 }

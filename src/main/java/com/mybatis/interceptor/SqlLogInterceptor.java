@@ -1,6 +1,6 @@
 package com.mybatis.interceptor;
 
-import com.mybatis.util.ReflectUtils;
+import com.commons.util.ReflectUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
