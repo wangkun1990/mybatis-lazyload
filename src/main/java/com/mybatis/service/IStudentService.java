@@ -118,4 +118,12 @@ public interface IStudentService {
      * @return
      */
     List<Student> selectByMap(Map<String, Object> paramMap);
+
+    default void defaultMethod(String name) {
+        System.out.println(name);
+    }
+
+    default void defaultMethod2() {
+
+    }
 }

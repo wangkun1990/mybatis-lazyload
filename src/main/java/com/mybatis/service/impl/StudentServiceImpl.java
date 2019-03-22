@@ -122,4 +122,9 @@ public class StudentServiceImpl implements IStudentService {
     public List<Student> selectByMap(Map<String, Object> paramMap) {
         return studentMapper.selectByMap(paramMap);
     }
+
+    /*@Override
+    public void defaultMethod(String name) {
+        System.out.println("hello " + name);
+    }*/
 }

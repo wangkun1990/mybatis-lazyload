@@ -214,4 +214,9 @@ public class StudentServiceImplTest {
         List<Student> students = studentService.selectByMap(param);
         LOGGER.info("selectByMap = {}", students);
     }
+
+    @Test
+    public void defaultMethod() {
+        studentService.defaultMethod("tom");
+    }
 }
