@@ -4,6 +4,8 @@ import com.mybatis.entity.PageModel;
 import com.mybatis.entity.Student;
 import com.mybatis.mapper.StudentMapper;
 import com.mybatis.service.IStudentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import java.util.Set;
 
 @Service
 public class StudentServiceImpl implements IStudentService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Autowired
     private StudentMapper studentMapper;
@@ -55,6 +59,7 @@ public class StudentServiceImpl implements IStudentService {
 
     @Override
     public Student selectOne(Integer id) {
+        LOGGER.info("selectOne param = {}", id);
         return studentMapper.selectOne(id);
     }
 

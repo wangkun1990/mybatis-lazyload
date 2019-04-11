@@ -35,4 +35,5 @@
 	<import resource="spring-dao.xml"/>
 
 	<aop:aspectj-autoproxy proxy-target-class="true"/>
+	<bean id="slf4jTracerAop" class="com.mybatis.aop.Slf4jTracerAop"/>
 	</beans>

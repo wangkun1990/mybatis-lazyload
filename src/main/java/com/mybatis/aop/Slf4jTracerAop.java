@@ -6,20 +6,16 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.MDC;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Aspect
-@Component
 public class Slf4jTracerAop {
 
     private static final String TRACE_ID = "traceId";
 
     private ThreadLocal<ProceedingJoinPoint> beforeThreadLocal = new ThreadLocal<>();
 
-    @Pointcut("execution(* com.mybatis.controller.HttpTestController.get())")
-    //@Pointcut("@within(org.springframework.stereotype.Controller)")
+    @Pointcut("execution(* com.mybatis..*(..))")
     public void traceLog() {
 
     }
