@@ -24,6 +24,7 @@ public abstract class TracerRunnable implements Runnable {
             runWithMDC();
         } finally {
             if (previous == null) {
+                // 防止使用线程池导致后面打印的traceId一致
                 MDC.clear();
             } else {
                 MDC.setContextMap(previous);
