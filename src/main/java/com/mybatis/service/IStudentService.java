@@ -2,6 +2,8 @@ package com.mybatis.service;
 
 import com.mybatis.entity.PageModel;
 import com.mybatis.entity.Student;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -9,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 public interface IStudentService {
+
+    Logger LOGGER = LoggerFactory.getLogger(IStudentService.class);
 
     /**
      *
@@ -120,7 +124,7 @@ public interface IStudentService {
     List<Student> selectByMap(Map<String, Object> paramMap);
 
     default void defaultMethod(String name) {
-        System.out.println(name);
+        LOGGER.info("defaultMethod param = {}", name);
     }
 
     default void defaultMethod2() {

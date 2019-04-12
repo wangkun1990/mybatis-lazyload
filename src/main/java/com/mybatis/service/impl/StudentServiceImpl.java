@@ -59,7 +59,7 @@ public class StudentServiceImpl implements IStudentService {
 
     @Override
     public Student selectOne(Integer id) {
-        LOGGER.info("selectOne param = {}", id);
+        LOGGER.info("selectOne param = {}, thread id = {}", id, Thread.currentThread().getId());
         return studentMapper.selectOne(id);
     }
 
