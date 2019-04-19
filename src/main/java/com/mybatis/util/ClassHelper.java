@@ -114,7 +114,7 @@ public class ClassHelper {
      * @see Thread#getContextClassLoader()
      */
     public static ClassLoader getClassLoader() {
-        return getClassLoader(com.commons.util.ClassHelper.class);
+        return getClassLoader(ClassHelper.class);
     }
 
     /**

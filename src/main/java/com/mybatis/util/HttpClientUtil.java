@@ -1,6 +1,6 @@
 package com.mybatis.util;
 
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 public final class HttpClientUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(com.commons.util.HttpClientUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpClientUtil.class);
 
     private HttpClientUtil() {
 

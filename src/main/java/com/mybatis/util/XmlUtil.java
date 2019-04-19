@@ -12,7 +12,7 @@ import java.io.InputStream;
 
 public final class XmlUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(com.commons.util.XmlUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XmlUtil.class);
 
     private XmlUtil() {
 

@@ -1,6 +1,6 @@
 package com.mybatis.interceptor;
 
-import com.commons.util.ReflectUtils;
+import com.mybatis.util.ReflectUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
@@ -164,7 +164,7 @@ public class SqlLogInterceptor implements Interceptor {
 
     private String appendParam(String sql, Object paramValue) {
         String tmpSql = sql;
-        if (NumberUtils.isCreatable(paramValue.toString())) {
+        if (NumberUtils.isDigits(paramValue.toString())) {
             return tmpSql.replaceFirst("\\?", Objects.toString(paramValue));
         }
         return tmpSql.replaceFirst("\\?", "'" + paramValue + "'");

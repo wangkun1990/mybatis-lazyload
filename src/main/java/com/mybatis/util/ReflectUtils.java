@@ -1,7 +1,6 @@
 
 package com.mybatis.util;
 
-import com.commons.util.ClassHelper;
 import javassist.CtClass;
 import javassist.CtConstructor;
 import javassist.CtMethod;
@@ -865,7 +864,7 @@ public final class ReflectUtils {
         } else {
             Class<?>[] types = new Class<?>[parameterTypes.length];
             for (int i = 0; i < parameterTypes.length; i++) {
-                types[i] = com.commons.util.ReflectUtils.name2class(parameterTypes[i]);
+                types[i] = ReflectUtils.name2class(parameterTypes[i]);
             }
             method = clazz.getMethod(methodName, types);
 

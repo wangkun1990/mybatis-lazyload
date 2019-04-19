@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
 
 public final class MD5Util {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(com.commons.util.MD5Util.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MD5Util.class);
 
     private MD5Util() {
 
