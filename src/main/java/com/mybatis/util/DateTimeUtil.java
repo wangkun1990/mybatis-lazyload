@@ -1,6 +1,5 @@
-package com.joda.time;
+package com.mybatis.util;
 
-import org.joda.time.*;
 import org.joda.time.format.DateTimeFormat;
 
 import java.util.Date;
@@ -136,6 +135,20 @@ public class DateTimeUtil {
         }
         LocalDateTime localDateTime = new LocalDateTime(date);
         return localDateTime.plusMonths(months).toDate();
+    }
+
+    /**
+     * 获取指定时间加上几天后的时间
+     * @param date
+     * @param days
+     * @return
+     */
+    public static Date addDays(Date date, int days) {
+        if (date == null) {
+            throw new NullPointerException();
+        }
+        LocalDateTime localDateTime = new LocalDateTime(date);
+        return localDateTime.plusDays(days).toDate();
     }
 
     /**
