@@ -1,7 +1,7 @@
 package com.mybatis.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.mybatis.async.TracerRunnable;
+import com.mybatis.async.AbstractTracerRunnable;
 import com.mybatis.entity.Student;
 import com.mybatis.service.IStudentService;
 import org.slf4j.Logger;
@@ -68,7 +68,7 @@ public class HttpTestController {
     public Student get() {
         LOGGER.info("get method start thread id = {}", Thread.currentThread().getId());
 
-        TracerRunnable tracerRunnable = new TracerRunnable() {
+        AbstractTracerRunnable tracerRunnable = new AbstractTracerRunnable() {
             @Override
             public void runWithMDC() {
                 System.out.println(Thread.currentThread().getId());
@@ -79,7 +79,7 @@ public class HttpTestController {
                 }
             }
         };
-        new Thread(new TracerRunnable() {
+        new Thread(new AbstractTracerRunnable() {
             @Override
             public void runWithMDC() {
                 LOGGER.info("a new thread id = {}", Thread.currentThread().getId());

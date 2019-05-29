@@ -3,17 +3,16 @@ package com.mybatis.async;
 import org.slf4j.MDC;
 
 import java.util.Map;
+import java.util.concurrent.Callable;
 
-public abstract class TracerRunnable implements Runnable {
-
+public abstract class AbstractTracerCallable<V> implements Callable {
     private Map<String, String> context;
 
-    public TracerRunnable() {
+    public AbstractTracerCallable() {
         this.context = MDC.getCopyOfContextMap();
     }
-
     @Override
-    public void run() {
+    public V call() throws Exception {
         Map<String, String> previous = MDC.getCopyOfContextMap();
         if (context == null) {
             MDC.clear();
@@ -21,10 +20,9 @@ public abstract class TracerRunnable implements Runnable {
             MDC.setContextMap(context);
         }
         try {
-            runWithMDC();
+            return callWithMdc();
         } finally {
             if (previous == null) {
-                // 防止使用线程池导致后面打印的traceId一致
                 MDC.clear();
             } else {
                 MDC.setContextMap(previous);
@@ -32,5 +30,6 @@ public abstract class TracerRunnable implements Runnable {
         }
     }
 
-    public abstract void runWithMDC();
+
+    public abstract V callWithMdc();
 }
