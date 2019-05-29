@@ -9,8 +9,8 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class Slf4jTracerAop {
 
     private static final String TRACE_ID = "traceId";
