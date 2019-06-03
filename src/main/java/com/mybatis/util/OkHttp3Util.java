@@ -8,6 +8,8 @@ import okhttp3.Response;
 import org.apache.commons.collections4.MapUtils;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -44,8 +46,22 @@ public final class OkHttp3Util {
         }
     }
 
+    public static String proxyGet(String url, String ip, Integer port) throws IOException {
+        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ip, port));
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(2, TimeUnit.SECONDS)
+                .writeTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(5, TimeUnit.SECONDS).proxy(proxy).build();
+        Request request = new Request.Builder().url(url).get().build();
+        Response response = okHttpClient.newCall(request).execute();
+        if (response.isSuccessful()) {
+            return response.body().string();
+        } else {
+            throw new RuntimeException(response.message());
+        }
+    }
+
     /**
-     *
      * @param url
      * @param header
      * @return
