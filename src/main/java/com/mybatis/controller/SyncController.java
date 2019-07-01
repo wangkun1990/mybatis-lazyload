@@ -1,18 +1,28 @@
 package com.mybatis.controller;
 
+import com.mybatis.service.AsyncService;
 import com.mybatis.service.impl.SyncServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import javax.annotation.Resource;
+
 @RequestMapping
 @RestController
 public class SyncController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SyncController.class);
+
     @Autowired
     private SyncServiceImpl syncService;
+
+    @Resource
+    private AsyncService asyncService;
 
     @GetMapping(value = "/async")
     public void async() {
@@ -39,5 +49,14 @@ public class SyncController {
             System.out.println(o);
         });
         return deferredResult;
+    }
+
+    @GetMapping(value = "/springAsync")
+    public String springAsync() {
+        LOGGER.info(this.getClass() + "springAsync start");
+        long start = System.currentTimeMillis();
+        asyncService.asyncTest();
+        LOGGER.info("cost time = {}", System.currentTimeMillis() - start);
+        return "ok";
     }
 }

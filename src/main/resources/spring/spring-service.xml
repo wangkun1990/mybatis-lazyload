@@ -1,39 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jee="http://www.springframework.org/schema/jee"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:cache="http://www.springframework.org/schema/cache"
-	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
-		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.3.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
-	<!-- 扫描service包下所有使用注解的类型 -->
-	<context:component-scan base-package="com.mybatis.service, com.mybatis.aop">
-		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
-	</context:component-scan>
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/task
+       http://www.springframework.org/schema/task/spring-task.xsd">
+    <!-- 扫描service包下所有使用注解的类型 -->
+    <context:component-scan base-package="com.mybatis.beanconfigure, com.mybatis.service, com.mybatis.aop, com.hystrix">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
 
-	<context:property-placeholder location="classpath:jdbc.properties" file-encoding="utf-8"/>
-	
-	<!-- 配置事务管理器 -->
-	<bean id="transactionManager"
+    <context:property-placeholder location="classpath:jdbc.properties" file-encoding="utf-8"/>
+
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager"
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource"/>
     </bean>
-    
+
     <!-- 配置基于注解的声明式事务
     	默认使用注解来管理事务行为
      -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-	<import resource="spring-dao.xml"/>
+    <import resource="spring-dao.xml"/>
 
-	<aop:aspectj-autoproxy proxy-target-class="true"/>
-	<!--<bean id="slf4jTracerAop" class="com.mybatis.aop.Slf4jTracerAop"/>-->
-	</beans>
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <task:annotation-driven/>
+</beans>
