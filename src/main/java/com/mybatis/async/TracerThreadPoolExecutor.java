@@ -4,11 +4,14 @@ import org.slf4j.MDC;
 
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * 可以打印log4j MDC信息的线程池
  */
 public class TracerThreadPoolExecutor extends ThreadPoolExecutor {
 
@@ -20,7 +23,17 @@ public class TracerThreadPoolExecutor extends ThreadPoolExecutor {
      */
     public static TracerThreadPoolExecutor newWithInheritedMdc(int corePoolSize, int maximumPoolSize, long keepAliveTime,
                                                                TimeUnit unit, BlockingQueue<Runnable> workQueue) {
-        return new TracerThreadPoolExecutor(null, corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+        return new TracerThreadPoolExecutor(null, corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, Executors.defaultThreadFactory(), new AbortPolicy());
+    }
+
+    public static TracerThreadPoolExecutor newWithInheritedMdc(int corePoolSize, int maximumPoolSize, long keepAliveTime,
+                                                               TimeUnit unit, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
+        return new TracerThreadPoolExecutor(null, corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, Executors.defaultThreadFactory(), handler);
+    }
+
+    public static TracerThreadPoolExecutor newWithInheritedMdc(int corePoolSize, int maximumPoolSize, long keepAliveTime,
+                                                               TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
+        return new TracerThreadPoolExecutor(null, corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, handler);
     }
 
     /**
@@ -29,7 +42,7 @@ public class TracerThreadPoolExecutor extends ThreadPoolExecutor {
     public static TracerThreadPoolExecutor newWithCurrentMdc(int corePoolSize, int maximumPoolSize, long keepAliveTime,
                                                              TimeUnit unit, BlockingQueue<Runnable> workQueue) {
         return new TracerThreadPoolExecutor(MDC.getCopyOfContextMap(), corePoolSize, maximumPoolSize, keepAliveTime, unit,
-                workQueue);
+                workQueue, Executors.defaultThreadFactory(), new AbortPolicy());
     }
 
     /**
@@ -38,12 +51,12 @@ public class TracerThreadPoolExecutor extends ThreadPoolExecutor {
     public static TracerThreadPoolExecutor newWithFixedMdc(Map<String, String> fixedContext, int corePoolSize,
                                                            int maximumPoolSize, long keepAliveTime, TimeUnit unit,
                                                            BlockingQueue<Runnable> workQueue) {
-        return new TracerThreadPoolExecutor(fixedContext, corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+        return new TracerThreadPoolExecutor(fixedContext, corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, Executors.defaultThreadFactory(), new AbortPolicy());
     }
 
     private TracerThreadPoolExecutor(Map<String, String> fixedContext, int corePoolSize, int maximumPoolSize,
-                                     long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+                                     long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
+        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, handler);
         this.fixedContext = fixedContext;
         this.useFixedContext = (fixedContext != null);
     }
