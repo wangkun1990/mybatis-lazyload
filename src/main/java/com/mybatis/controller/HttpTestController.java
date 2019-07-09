@@ -93,4 +93,12 @@ public class HttpTestController {
         LOGGER.info("result = {}, thread id = {}", JSON.toJSONString(student), Thread.currentThread().getId());
         return student;
     }
+
+    @GetMapping(value = "/getStudent/{id}")
+    public Student getStudent(@PathVariable("id") Integer id) {
+        LOGGER.info("get getStudent method.param id = {} ,start thread id = {}", id, Thread.currentThread().getId());
+        Student student = studentService.selectOne(id);
+        LOGGER.info("result = {}, thread id = {}", JSON.toJSONString(student), Thread.currentThread().getId());
+        return student;
+    }
 }

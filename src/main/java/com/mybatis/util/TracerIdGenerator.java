@@ -13,7 +13,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 后面的 13 位 1403169275002 是产生 TraceId 的时间.之后的 4 位 1003 是一个自增的序列,从 1000 涨到 9000,
  * 到达 9000 后回到 1000 再开始往上涨.最后的 5 位 56696 是当前的进程 ID,为了防止单机多进程出现 TraceId 冲突的情况，所以在 TraceId 末尾添加了当前的进程 ID.
  */
-public class TraceIdGenerator {
+public class TracerIdGenerator {
+
+    public static final String TRACE_ID = "traceId";
 
     private static String IP_16 = "ffffffff";
     private static AtomicInteger count = new AtomicInteger(1000);
