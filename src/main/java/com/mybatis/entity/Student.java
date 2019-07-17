@@ -14,6 +14,8 @@ public class Student implements Serializable {
 
     private Integer sex;
 
+    private Integer age;
+
     public Student() {
 
     }
@@ -60,6 +62,14 @@ public class Student implements Serializable {
         this.sex = sex;
     }
 
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -67,6 +77,7 @@ public class Student implements Serializable {
                 ", name='" + name + '\'' +
                 ", department=" + department +
                 ", sex=" + sex +
+                ", age=" + age +
                 '}';
     }
 }

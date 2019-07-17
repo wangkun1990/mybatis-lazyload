@@ -4,11 +4,12 @@ import com.mybatis.entity.Department;
 import com.mybatis.entity.PageModel;
 import com.mybatis.entity.Student;
 import com.mybatis.service.IStudentService;
-import org.hamcrest.core.Is;
+import com.mybatis.util.TracerIdGenerator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 
@@ -30,6 +32,7 @@ public class StudentServiceImplTest {
 
     @Autowired
     private IStudentService studentService;
+
     @Test
     public void getStudentById() {
         Student student = studentService.getStudentById(1);
@@ -136,7 +139,7 @@ public class StudentServiceImplTest {
 
     @Test
     public void getByIdsArray() {
-        Integer[] ids = new Integer[] {1, 2};
+        Integer[] ids = new Integer[]{1, 2};
         List<Student> students = studentService.getByIdsArray(ids);
         LOGGER.info("getByIdsArray = {}", students);
     }
@@ -218,5 +221,18 @@ public class StudentServiceImplTest {
     @Test
     public void defaultMethod() {
         studentService.defaultMethod("tom");
+    }
+
+    @Test
+    public void filterStudent() throws Exception {
+        MDC.put(TracerIdGenerator.TRACE_ID, TracerIdGenerator.generate());
+        String[] firstName = {"张", "王"};
+        for (int i = 0; i < 10; i++) {
+            Student student = new Student();
+            student.setAge(new Random().nextInt(20));
+            student.setName(firstName[i % firstName.length] + i);
+            studentService.filterStudent(student);
+        }
+        MDC.remove(TracerIdGenerator.TRACE_ID);
     }
 }

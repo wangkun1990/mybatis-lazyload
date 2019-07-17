@@ -130,4 +130,6 @@ public interface IStudentService {
     default void defaultMethod2() {
 
     }
+
+    void filterStudent(Student student) throws Exception;
 }

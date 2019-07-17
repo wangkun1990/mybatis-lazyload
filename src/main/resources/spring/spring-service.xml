@@ -39,4 +39,6 @@
 
     <task:executor id="threadPoolTaskExecutor" keep-alive="60" pool-size="10-20" queue-capacity="10000" rejection-policy="ABORT"/>
 
+    <import resource="spring-commons-chain.xml"/>
+    <import resource="spring-rabbitmq.xml"/>
 </beans>

@@ -4,11 +4,15 @@ import com.mybatis.entity.PageModel;
 import com.mybatis.entity.Student;
 import com.mybatis.mapper.StudentMapper;
 import com.mybatis.service.IStudentService;
+import org.apache.commons.chain.Chain;
+import org.apache.commons.chain.Context;
+import org.apache.commons.chain.impl.ContextBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +25,9 @@ public class StudentServiceImpl implements IStudentService {
 
     @Autowired
     private StudentMapper studentMapper;
+
+    @Resource
+    private Chain chainBase;
 
     @Override
     public Student getStudentById(Integer id) {
@@ -132,4 +139,11 @@ public class StudentServiceImpl implements IStudentService {
     public void defaultMethod(String name) {
         System.out.println("hello " + name);
     }*/
+
+    @Override
+    public void filterStudent(Student student) throws Exception {
+        Context context = new ContextBase();
+        context.put("student", student);
+        chainBase.execute(context);
+    }
 }
