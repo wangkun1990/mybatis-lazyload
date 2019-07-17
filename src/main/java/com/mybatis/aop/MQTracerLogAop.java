@@ -9,8 +9,8 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
-@Component
-@Aspect
+//@Component
+//@Aspect
 public class MQTracerLogAop {
 
     @Pointcut("execution(* com.mybatis.rabbitmq.RabbitMessageListener.message(..))")
