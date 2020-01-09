@@ -34,9 +34,16 @@
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
-    
+
+    <!--拦截器执行顺序和配置顺序有关-->
     <mvc:interceptors>
-        <bean class="com.mybatis.interceptor.LogTraceInterceptor"/>
+        <bean class="com.mybatis.interceptor.LogTraceInterceptor1"/>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/sleep/**"/>
+            <bean class="com.mybatis.interceptor.LogTraceInterceptor"/>
+        </mvc:interceptor>
+
     </mvc:interceptors>
 
 </beans>
