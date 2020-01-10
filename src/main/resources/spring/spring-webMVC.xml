@@ -33,6 +33,9 @@
                 </property>
             </bean>
         </mvc:message-converters>
+        <mvc:return-value-handlers>
+            <bean class="com.mybatis.handler.ResponseBase64HandlerMethodReturnValueHandler"/>
+        </mvc:return-value-handlers>
     </mvc:annotation-driven>
 
     <!--拦截器执行顺序和配置顺序有关-->

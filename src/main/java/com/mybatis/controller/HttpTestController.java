@@ -1,6 +1,7 @@
 package com.mybatis.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.mybatis.annotation.ResponseEncryptBody;
 import com.mybatis.async.AbstractTracerRunnable;
 import com.mybatis.entity.Student;
 import com.mybatis.service.IStudentService;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -27,7 +28,9 @@ public class HttpTestController {
     private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
             0L, TimeUnit.MILLISECONDS, new SynchronousQueue<>());
 
-    private ExecutorService  fixExecutorService = Executors.newFixedThreadPool(2);
+    private ExecutorService fixExecutorService = new ThreadPoolExecutor(2, 2,
+            0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>());
 
     @Resource
     private IStudentService studentService;
@@ -45,18 +48,16 @@ public class HttpTestController {
     @GetMapping(value = "/npe")
     public void npe() {
         try {
-            threadPoolExecutor.submit(new Runnable() {
-                @Override
-                public void run() {
-                    for (int i = 0; i < 500000; i++) {
-                        try {
-                            String a = null;
-                            a.toLowerCase();
-                            Thread.sleep(1);
-                        } catch (Exception e) {
-                            LOGGER.error("Thread Exception = ", e);
-                        };
+            threadPoolExecutor.submit(() -> {
+                for (int i = 0; i < 1; i++) {
+                    try {
+                        String a = null;
+                        a.toLowerCase();
+                        Thread.sleep(1);
+                    } catch (Exception e) {
+                        LOGGER.error("Thread Exception = ", e);
                     }
+                    ;
                 }
             });
         } catch (Exception e) {
@@ -99,6 +100,12 @@ public class HttpTestController {
         LOGGER.info("get getStudent method.param id = {} ,start thread id = {}", id, Thread.currentThread().getId());
         Student student = studentService.selectOne(id);
         LOGGER.info("result = {}, thread id = {}", JSON.toJSONString(student), Thread.currentThread().getId());
+        return student;
+    }
+
+    @RequestMapping(value = "/student")
+    @ResponseEncryptBody
+    public Student test(Student student) {
         return student;
     }
 }
